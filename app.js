@@ -70,6 +70,38 @@ app.get('/api/images', (req, res) => {
     });
 });
 
+//GET ALL NEWS ENDPOINT
+
+async function getAllNews() {
+  try {
+    const snapshot = await db.collection('news').get();
+    const news = [];
+    for (const doc of snapshot.docs) {
+      const newsData = doc.data();
+      if (newsData.image) {
+        newsData.imageUrl = await getURLImages(newsData.image);
+      }
+      news.push(newsData);
+    }
+    return news;
+  } catch (error) {
+    console.log('Error al obtener las noticias:', error);
+    throw error; 
+  }
+}
+
+
+app.get('/api/news', (req, res) => {
+  getAllNews()
+    .then((news) => {
+      res.status(200).json(news);
+    })
+    .catch((error) => {
+      res.status(500).json({error: 'Error al obtener las noticias'});
+    });
+});
+
+
 // SEND EMAIL ENDPOINT
 app.post('/sendEmail', (req, res) => {
   const dataForms = req.body;
