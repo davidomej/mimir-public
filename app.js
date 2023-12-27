@@ -49,7 +49,6 @@ async function getURLImages(fileName) {
   }
 }
 
-
 app.get('/api/all-courses', (req, res) => {
   getAllCourses()
     .then((courses) => {
@@ -90,7 +89,6 @@ async function getAllNews() {
   }
 }
 
-
 app.get('/api/news', (req, res) => {
   getAllNews()
     .then((news) => {
@@ -99,6 +97,22 @@ app.get('/api/news', (req, res) => {
     .catch((error) => {
       res.status(500).json({error: 'Error al obtener las noticias'});
     });
+});
+
+//SAVE NEWS LIKES ENDPOINT
+
+app.post('/news/:id/like', async (req, res) => {
+  const newsId = req.params.id;
+  const newLikesCount = req.body.likesCount;
+
+  try {
+    const newsRef = db.collection('news').doc(newsId);
+    await newsRef.update({ likesCount: newLikesCount });
+    res.send({ message: 'Likes updated successfully' });
+  } catch (error) {
+    console.error('Error al actualizar los likes:', error);
+    res.status(500).json({error: 'Error al actualizar los likes'});
+  }
 });
 
 
