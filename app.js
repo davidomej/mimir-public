@@ -77,6 +77,7 @@ async function getAllNews() {
     const news = [];
     for (const doc of snapshot.docs) {
       const newsData = doc.data();
+      newsData.id = doc.id; 
       if (newsData.image) {
         newsData.imageUrl = await getURLImages(newsData.image);
       }
